@@ -2,7 +2,7 @@
 
 OpenCode plugin that runs **Claude Code command hooks from settings files**. This is the sole plugin in this repository. It does **not** load Claude plugin marketplaces, skills, or MCP packages. OpenCode v2 is the primary target; v1 support is provided where object plugin entrypoints are available.
 
-**This package is currently source-install only and is not published to npm.** Node.js 20+ is required. Runtime uses only built-in Node modules.
+**Install directly from GitHub with OpenCode v2—no local checkout or npm publication is required.** Node.js 20+ is required. Runtime uses only built-in Node modules.
 
 ## Settings scopes
 
@@ -16,9 +16,111 @@ Hooks load in deterministic **global → project → project-local** order:
 
 Hook groups in all selected files are appended (not replaced). The last explicit `disableAllHooks` boolean wins, with project-local taking precedence. No settings files are modified, and files are loaded at plugin startup: restart OpenCode after changes.
 
-## Install (OpenCode v2)
+## Installation (OpenCode v2)
 
-Clone this repository and add the **absolute path to the repository root** to your global `~/.config/opencode/opencode.jsonc` or project `opencode.jsonc`:
+**Recommended: install directly from GitHub.** OpenCode v2 supports npm-compatible Git package specifications. You do **not** need an npm release or a local checkout.
+
+### Global installation (OpenCode CLI)
+
+Install once for all projects:
+
+```bash
+opencode plugin add github:rigerc/opencode-agent-plugin-support
+opencode plugin list
+```
+
+OpenCode fetches the plugin from GitHub. Restart an existing session if necessary:
+
+```bash
+opencode service restart
+```
+
+Global **plugin** installation means the adapter is available across your projects; the Claude **hooks** it runs are resolved for each current project.
+
+### Global installation (configuration)
+
+Alternatively, add this to `~/.config/opencode/opencode.jsonc` (or `opencode.json`):
+
+```json
+{
+  "plugins": ["github:rigerc/opencode-agent-plugin-support"]
+}
+```
+
+Append the entry to any existing `plugins` array. Use either the CLI or the global configuration approach, not both.
+
+### Project-only installation
+
+Add the same entry in `<project>/opencode.jsonc` (or `opencode.json`):
+
+```json
+{
+  "plugins": ["github:rigerc/opencode-agent-plugin-support"]
+}
+```
+
+The adapter is then loaded only in that project. By default, it still reads the user's global Claude hooks (`~/.claude/settings.json`) *plus* the project's `.claude/settings.json` and `.claude/settings.local.json`.
+
+### Exclude global Claude hooks
+
+To enable project and project-local hooks only, use the object form in the project's `opencode.jsonc`:
+
+```json
+{
+  "plugins": [
+    {
+      "package": "github:rigerc/opencode-agent-plugin-support",
+      "options": {
+        "scopes": {
+          "global": false,
+          "project": true,
+          "local": true
+        }
+      }
+    }
+  ]
+}
+```
+
+These options control **Claude settings file scopes**; they do not change the scope of the OpenCode plugin installation. Place the same object in the global OpenCode configuration if these defaults should apply to every project.
+
+### Pin to a commit or tag
+
+For reproducibility, use a revision (replace `<FULL_COMMIT_SHA>` with an actual SHA):
+
+```json
+{
+  "plugins": ["github:rigerc/opencode-agent-plugin-support#<FULL_COMMIT_SHA>"]
+}
+```
+
+OpenCode also supports Git branches and tags. A full commit SHA is pinned; an unpinned Git package can receive updates through OpenCode's plugin manager.
+
+### Manage and uninstall
+
+For global packages installed with `opencode plugin add`:
+
+```bash
+opencode plugin list
+opencode plugin check
+opencode plugin update
+opencode plugin remove github:rigerc/opencode-agent-plugin-support
+```
+
+For installations configured in `opencode.json(c)`, remove the `github:` entry from that file to uninstall. Do not install this plugin both globally and locally, or its hooks may execute twice.
+
+### Local checkout (optional, for development)
+
+You can also run the source directly:
+
+```bash
+git clone https://github.com/rigerc/opencode-agent-plugin-support.git
+cd opencode-agent-plugin-support
+npm run check
+npm test
+```
+
+Add the **absolute directory path** (not `index.js`) to the desired global or project OpenCode configuration:
 
 ```json
 {
@@ -26,24 +128,11 @@ Clone this repository and add the **absolute path to the repository root** to yo
 }
 ```
 
-The repository contains a root `index.js`, which OpenCode v2 requires for local directory plugins. Installing it globally enables both global and per-project Claude settings hooks in every project that uses it. Installing it in one project's OpenCode configuration limits activation to that project; by default, the plugin still reads your global Claude settings in that project.
+The repository root has the `index.js` entrypoint OpenCode v2 expects. The local checkout is an *alternative* to GitHub package installation, not a prerequisite.
 
-To exclude the global hooks for a project, use an object-style plugin entry on OpenCode releases that support package options:
+**Requirements:** OpenCode v2 and Node.js 20+. The plugin has no runtime npm dependencies. It is **not currently published to npm** as `opencode-claude-hooks-compat`; use the Git package specification above. For OpenCode v1 (1.18.29+), the legacy `plugin` key and local directory installation may work, but these Git install instructions target v2.
 
-```json
-{
-  "plugins": [{
-    "package": "/absolute/path/to/opencode-agent-plugin-support",
-    "options": {
-      "scopes": {"global": false, "project": true, "local": true}
-    }
-  }]
-}
-```
-
-Avoid loading this package both globally and locally in the same OpenCode session: duplicate plugin instances may run hooks twice.
-
-On OpenCode v1 (1.18.29+), use the `plugin` field rather than `plugins` if local folder plugins are supported by your release.
+See the [OpenCode v2 plugin documentation](https://dev.opencode.ai/v2/docs/plugins).
 
 ## Configure Claude hooks
 
