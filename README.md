@@ -231,6 +231,10 @@ After a global install, the same commands work as `opencode-agent-plugin-support
 - `install-local` — register a local directory in `~/.agents/plugins` (must exist). Does not clone git marketplaces. Prints a note if `~/.agents/plugins` is not one of your sources.
 - `marketplace-add` — record an extra marketplace (`github:org/repo` or a path).
 
+## Standalone Claude settings hooks adapter
+
+For Claude Code `.claude/settings.json` command-hook compatibility with **global, project and project-local scopes**, see [`packages/opencode-claude-hooks-compat/`](packages/opencode-claude-hooks-compat/README.md). It is an independent OpenCode plugin and is not part of the published Agent Plugin Support npm package.
+
 ## Support
 
 | Component | OpenCode v2 | OpenCode v1 | Claude format | Agent Plugins format |
