@@ -1,82 +1,39 @@
 {
-  "name": "@harnesstap/opencode-agent-plugin-support",
-  "version": "0.2.0",
-  "description": "OpenCode plugin that loads Claude Code plugins and Agent Plugins (agent-plugins.org) packages as native OpenCode skills, commands, agents, MCP servers, instructions, and hooks.",
-  "license": "MIT",
-  "author": {
-    "name": "HarnessTap",
-    "url": "https://github.com/harnesstap"
-  },
+  "name": "opencode-claude-hooks-compat",
+  "version": "0.1.0",
+  "description": "Claude Code hooks compatibility for OpenCode with global, project and project-local settings",
   "type": "module",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./index.js",
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
-    "./schema/agent-plugin-support.schema.json": "./schema/agent-plugin-support.schema.json"
-  },
-  "bin": {
-    "opencode-agent-plugin-support": "./dist/cli.js"
+    ".": "./index.js"
   },
   "files": [
-    "dist",
-    "schema",
     "index.js",
     "README.md",
-    "ARCHITECTURE.md",
-    "CONTRIBUTING.md",
-    "LICENSE",
-    "SECURITY.md",
-    "CHANGELOG.md"
+    "LICENSE"
   ],
-  "engines": {
-    "node": ">=18"
-  },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "prepare": "tsc -p tsconfig.json",
-    "prepublishOnly": "npm run build && npm test"
+    "check": "node --check index.js",
+    "test": "node --test test/*.test.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/harnesstap/opencode-agent-plugin-support.git"
+  "engines": {
+    "node": ">=20"
   },
-  "homepage": "https://github.com/harnesstap/opencode-agent-plugin-support#readme",
-  "bugs": {
-    "url": "https://github.com/harnesstap/opencode-agent-plugin-support/issues"
-  },
-  "publishConfig": {
-    "access": "public",
-    "provenance": true
-  },
+  "license": "MIT",
   "keywords": [
     "opencode",
     "opencode-plugin",
     "claude-code",
-    "claude-plugins",
-    "agent-plugins",
-    "skills",
-    "mcp"
+    "hooks",
+    "settings",
+    "compatibility"
   ],
-  "peerDependencies": {
-    "@opencode-ai/plugin": ">=0.15.0"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rigerc/opencode-agent-plugin-support.git"
   },
-  "peerDependenciesMeta": {
-    "@opencode-ai/plugin": {
-      "optional": true
-    }
-  },
-  "dependencies": {
-    "yaml": "^2.8.1"
-  },
-  "devDependencies": {
-    "@types/node": "^24.7.2",
-    "ajv": "^8.20.0",
-    "typescript": "^5.9.3",
-    "vitest": "^3.2.4"
+  "homepage": "https://github.com/rigerc/opencode-agent-plugin-support#readme",
+  "bugs": {
+    "url": "https://github.com/rigerc/opencode-agent-plugin-support/issues"
   }
 }
